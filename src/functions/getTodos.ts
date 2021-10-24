@@ -6,22 +6,20 @@ export const handle: APIGatewayProxyHandler = async (event) => {
   const { id } = event.pathParameters;
 
   const response = await document.query({
-    TableName: "users_certificates",
+    TableName: "todos",
     KeyConditionExpression: "id = :id",
     ExpressionAttributeValues: {
       ":id": id
     }
   }).promise();
 
-  const userCertificate = response.Items[0];
+  const todo = response.Items[0];
 
-  if (userCertificate) {
+  if (todo) {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Certificado válido!!",
-        name: userCertificate.name,
-        url: `https://serverlesscertificatesand.s3.amazonaws.com/${id}.pdf`,
+        todo
       }),
     };
   }
@@ -29,7 +27,7 @@ export const handle: APIGatewayProxyHandler = async (event) => {
   return {
     statusCode: 400,
     body: JSON.stringify({
-      message: "Certificado invalido!",
+      message: "Todo não encontrado!",
     }),
   };
 }
